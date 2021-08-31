@@ -9,6 +9,7 @@ const FilmList = ({stateFilms}) => {
     // Toggles sorting by oldest or newest
     const changeOrder = function(value) {
 
+        // Sets order to Year
         if(value == "year"){
             if(order != "oldest"){
                 setOrder("oldest")
@@ -17,6 +18,8 @@ const FilmList = ({stateFilms}) => {
                 setOrder("newest")
             }
         }
+
+        // Sets order to Title
         if(value == "title"){
             if(order != "forward"){
                 setOrder("forward")
@@ -24,6 +27,11 @@ const FilmList = ({stateFilms}) => {
             else {
                 setOrder("reverse")
             }
+        }
+
+        // Sets order to Director
+        if(value == "director"){
+            setOrder("director")
         }
     }
 
@@ -70,6 +78,28 @@ const FilmList = ({stateFilms}) => {
                 }
             })
         }
+        if(order == "director"){
+            stateFilms.sort((a, b) => {
+                if(a.director.split(" ")[1] > b.director.split(" ")[1]){
+                    return 1
+                }
+                else if(a.director.split(" ")[1] < b.director.split(" ")[1]){
+                    return -1
+                }
+                else {
+                    if(a.director.charAt(0) > b.director.charAt(0)){
+                        return 1
+                    }
+                    else if(a.director.charAt(0) < b.director.charAt(0)){
+                        return -1
+                    }
+                    else {
+                        return 0
+                    }
+
+                }
+            })
+        }
         return stateFilms
     }
 
@@ -87,6 +117,7 @@ const FilmList = ({stateFilms}) => {
             <p>Sort by:</p>
             <button onClick={() => changeOrder("year")}>Year</button>
             <button onClick={() => changeOrder("title")}>Title</button>
+            <button onClick={() => changeOrder("director")}>Director</button>
             <ul>
                 {FilmListItems} 
             </ul>
