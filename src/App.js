@@ -7,11 +7,11 @@ import { useState, useEffect } from 'react';
 function App() {
 
   const[stateFilms, setStateFilms] = useState([]);
-
+  
     useEffect(() => {
         getStateFilms(); 
     }, [])
-
+    
     const getStateFilms = function(){
         fetch('https://ghibliapi.herokuapp.com/films')
         .then(res=>res.json())
