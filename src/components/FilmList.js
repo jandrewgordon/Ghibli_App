@@ -31,7 +31,12 @@ const FilmList = ({stateFilms}) => {
 
         // Sets order to Director
         if(value == "director"){
-            setOrder("director")
+            if(order != "dirForward"){
+                setOrder("dirForward")
+            }
+            else {
+                setOrder("dirReverse")
+            }
         }
     }
 
@@ -78,7 +83,7 @@ const FilmList = ({stateFilms}) => {
                 }
             })
         }
-        if(order == "director"){
+        if(order == "dirForward"){
             stateFilms.sort((a, b) => {
                 if(a.director.split(" ")[1] > b.director.split(" ")[1]){
                     return 1
@@ -100,6 +105,29 @@ const FilmList = ({stateFilms}) => {
                 }
             })
         }
+        if(order == "dirReverse"){
+            stateFilms.sort((a, b) => {
+                if(a.director.split(" ")[1] < b.director.split(" ")[1]){
+                    return 1
+                }
+                else if(a.director.split(" ")[1] > b.director.split(" ")[1]){
+                    return -1
+                }
+                else {
+                    if(a.director.charAt(0) < b.director.charAt(0)){
+                        return 1
+                    }
+                    else if(a.director.charAt(0) > b.director.charAt(0)){
+                        return -1
+                    }
+                    else {
+                        return 0
+                    }
+
+                }
+            })
+        }
+        
         return stateFilms
     }
 

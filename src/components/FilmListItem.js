@@ -4,10 +4,15 @@ const FilmListItem = ({film}, index) => {
 
     const[showDetails, setShowDetails] = useState(false);
     const[jikanQuery, setJikanQuery] = useState([]);
+    const[jikanFilm, setJikanFilm] = useState(undefined);
 
     useEffect(() => {
         getJikanQuery(); 
     }, [])
+
+    useEffect(() => {
+        getJikanFilm();
+    }, [jikanQuery])
 
     const jikanQueryURL = "https://api.jikan.moe/v3/search/anime?q=" + film.original_title_romanised
 
@@ -15,6 +20,20 @@ const FilmListItem = ({film}, index) => {
         fetch(jikanQueryURL)
         .then(res=>res.json())
         .then(data => setJikanQuery(data))
+    }
+
+    //Find corresponding film in Jikan DB
+    const getJikanFilm = () => {
+
+        if(jikanQuery.results != undefined){
+
+            for(let anime of jikanQuery.results){
+                if(anime.start_date != null && anime.start_date.slice(0, 4) === film.release_date){
+                    setJikanFilm(anime)
+                    return
+                }
+            }  
+        }  
     }
 
     const triggerFilmDetails = function() {
@@ -35,29 +54,17 @@ const FilmListItem = ({film}, index) => {
         }       
     }
 
-    const filmImage = (result, film) => {
+   
 
-        console.log(result.start_date)
-
-        const resultRelease = result.end_date.slice(0, 4)
-
-        console.log(resultRelease)
+    const filmImage = () => {
 
         if(film.title === "The Red Turtle") {
             return <img src={"https://static.wikia.nocookie.net/studio-ghibli/images/2/28/The_Red_Turtle_-_French.jpg"} />
         }
 
-        if(resultRelease != film.release_date){
-            return <img src={jikanQuery.results[1].image_url}/> 
-        }
-
         else {
-            return <img src={jikanQuery.results[0].image_url}/> 
+            return <img src={jikanFilm.image_url}/>
         }
-
-
-
-        
     }
    
     return (
@@ -67,7 +74,7 @@ const FilmListItem = ({film}, index) => {
             {showDetails?
             <>
             <p>{film.release_date} - {reformatDirectorName(film.director)}</p>
-            {jikanQuery.results != undefined ? filmImage(jikanQuery.results[0], film) : <p>Loading</p>}
+            {jikanQuery.results != undefined ? filmImage() : <p>Loading</p>}
             <p>{film.description.substring(0, 200)}... <a href = {film.id}>more details</a></p> 
             </>
             : <></>}
